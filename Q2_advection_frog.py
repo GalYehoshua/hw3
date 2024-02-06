@@ -10,7 +10,12 @@ def neg_shift_adv(adv):
     return np.concatenate([[adv[-2]], adv[:-1]])
 
 
+def pos_shift_adv(adv):
+    return np.concatenate([adv[1:], [adv[1]]])
+
+
 assert (neg_shift_adv(np.array([0, 1, 2, 1, 0])) == np.array([1, 0, 1, 2, 1])).all()
+assert (pos_shift_adv(np.array([0, 1, 2, 1, 0])) == np.array([1, 2, 1, 0, 1])).all()
 
 
 def err(adv_f, adv_i, dx):
@@ -28,7 +33,9 @@ def eps(num_of_cells):
     h = x_range[1] - x_range[0]
     dt = CFL * h  # if we want a none unit U, need to change this
     # print(dt, int(1 / dt))
-    advection = [initial_condition]
+
+    # TODO : check other initial conditions from Garcia, Lax ICs
+    advection = [initial_condition, initial_condition]
 
     other_dt = False
     if other_dt:
@@ -37,18 +44,18 @@ def eps(num_of_cells):
     for n in range(int(1 / dt)):
         # dt Other than that of CFL...
         if other_dt:
-            advection.append(advection[-1] - dt / h * (advection[-1] - neg_shift_adv(advection[-1])))
+            advection.append(advection[-2] - dt / h * (pos_shift_adv(advection[-1]) - neg_shift_adv(advection[-1])))
             continue
 
-        advection.append(advection[-1] - CFL * (advection[-1] - neg_shift_adv(advection[-1])))
+        advection.append(advection[-2] - CFL * (pos_shift_adv(advection[-1]) - neg_shift_adv(advection[-1])))
 
-    # plt.plot(x_range, initial_condition, color='b')
-    # plt.plot(x_range, advection[-1], color='orange')
-    # plt.show()
+    plt.plot(x_range, initial_condition, color='b')
+    plt.plot(x_range, advection[-1], color='orange')
+    plt.show()
 
     return err(advection[-1], initial_condition, h)
 
 
-nums = np.linspace(64, 564, 10).astype(int)
+nums = np.linspace(64, 564, 4).astype(int)
 plt.plot(nums ** -0.5, [eps(x) for x in nums])
 plt.show()
