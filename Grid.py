@@ -1,4 +1,8 @@
 import numpy as np
+"""
+Grid code was copied from Zingale's
+https://github.com/python-hydro/hydro_examples/blob/master/advection/advection.py
+"""
 
 
 class Grid1d(object):
@@ -29,7 +33,7 @@ class Grid1d(object):
         return np.zeros((self.nx + 2 * self.ng), dtype=np.float64)
 
     def fill_BCs(self):
-        """ fill all single ghostcell with periodic boundary conditions """
+        """ fill all single ghost cells with periodic boundary conditions """
 
         for gc in range(self.ng):
             # left boundary
