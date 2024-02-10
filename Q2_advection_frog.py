@@ -6,6 +6,7 @@ N = 64  # number of cells
 O: int = 2 * N // 3  # number of zeros in IC
 
 
+# shifting cells according to period BC
 def neg_shift_adv(adv):
     return np.concatenate([[adv[-2]], adv[:-1]])
 
@@ -18,6 +19,7 @@ assert (neg_shift_adv(np.array([0, 1, 2, 1, 0])) == np.array([1, 0, 1, 2, 1])).a
 assert (pos_shift_adv(np.array([0, 1, 2, 1, 0])) == np.array([1, 2, 1, 0, 1])).all()
 
 
+# mean sqr. over 1 period.
 def err(adv_f, adv_i, dx):
     assert len(adv_f) == len(adv_i), f"Something wrong with lengths {adv_f}, {adv_i}, {len(adv_f) - len(adv_i)}"
     return dx * sum([(adv_f[i] - adv_i[i]) ** 2 for i in range(len(adv_i))])
