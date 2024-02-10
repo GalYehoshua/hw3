@@ -6,20 +6,6 @@ from Grid import Grid1d
 
 CFL: float = 0.5
 N = 64  # number of cells
-O: int = 2 * N // 3  # number of zeros in IC
-
-
-# shifting cells according to period BC
-# def neg_shift_adv(adv):
-#     return np.concatenate([[adv[-2]], adv[:-1]])
-#
-#
-# def pos_shift_adv(adv):
-#     return np.concatenate([adv[1:], [adv[1]]])
-
-#
-# assert (neg_shift_adv(np.array([0, 1, 2, 1, 0])) == np.array([1, 0, 1, 2, 1])).all()
-# assert (pos_shift_adv(np.array([0, 1, 2, 1, 0])) == np.array([1, 2, 1, 0, 1])).all()
 
 
 def REA_and_err(num_of_cells):
