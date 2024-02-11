@@ -51,4 +51,6 @@ def eps(num_of_cells):
 
 nums = np.linspace(64, 564, 10).astype(int)
 plt.plot(nums ** -0.5, [eps(x) for x in nums])
+plt.xlabel("1 / Sqrt(N)")
+plt.ylabel("err")
 plt.show()
