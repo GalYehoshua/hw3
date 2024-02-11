@@ -41,9 +41,8 @@ def compute_single_step_rk4(x, y, vx, vy, dt):
     return np.array(location_velocity_vector) + 1 / 6 * (k1 + 2 * k2 + 2 * k3 + k4)
 
 
-def earth_orbit(step_method=compute_single_step_euler):
+def earth_orbit(step_method=compute_single_step_euler, dt=1 / 1000):
     steps = 1000
-    dt = 1.0 / steps
     a, e = 1, 0.1
     x, y, vx, vy = initial_conditions(a, e)
     xt, yt, vxt, vyt = [], [], [], []
@@ -57,14 +56,18 @@ def earth_orbit(step_method=compute_single_step_euler):
     return x, y, vx, vy
 
 
+def rad(loc_vel_tuple):
+    x, y, vx, vy = loc_vel_tuple
+    return (x ** 2 + y ** 2) ** 0.5
+
 def earth_orbit_euler():
-    return earth_orbit(compute_single_step_euler)
+    return [rad(earth_orbit(compute_single_step_euler, x / 1000)) for x in [1, 2, 10, 26, 100]]
 
 
 def earth_orbit_rk4():
-    return earth_orbit(compute_single_step_rk4)
+    return [rad(earth_orbit(compute_single_step_rk4, x / 1000)) for x in [1, 2, 10, 26, 100]]
 
 
 if __name__ == "__main__":
-    print(earth_orbit_euler())
-    print(earth_orbit_rk4())
+    print("euler", earth_orbit_euler())
+    print("RK4", earth_orbit_rk4())
