@@ -4,9 +4,9 @@ from matplotlib import pyplot as plt
 CFL: float = 0.5
 N = 64  # number of cells
 O: int = 2 * N // 3  # number of zeros in IC
+from Grid import Grid1d
 
-
-# shifting cells according to period BC
+# shifting cells according to period BC, for leap frog we need to take into account both positive and negative shifts
 def neg_shift_adv(adv):
     return np.concatenate([[adv[-2]], adv[:-1]])
 
@@ -27,17 +27,18 @@ def err(adv_f, adv_i, dx):
 
 def eps(num_of_cells):
     x_range = np.linspace(0, 1, num_of_cells)
-    num_of_zeros: int = 2 * num_of_cells // 3  # number of zeros in IC
     # We use here U = 1 for the velocity of the advection
-    initial_condition = np.concatenate(
-        [np.zeros(num_of_zeros // 2), np.ones(num_of_cells - num_of_zeros + num_of_zeros % 2),
-         np.zeros(num_of_zeros // 2)])
     h = x_range[1] - x_range[0]
     dt = CFL * h  # if we want a none unit U, need to change this
     # print(dt, int(1 / dt))
 
     # TODO : check other initial conditions from Garcia, Lax ICs
-    advection = [initial_condition, initial_condition]
+    grid = Grid1d(num_of_cells, 0)
+    grid.a[np.logical_and(grid.x >= 0.333, grid.x <= 0.666)] = 1.0
+    initial_condition = grid.a[grid.ilo: grid.ihi + 1]
+    grid.a[np.logical_and(grid.x >= 0.333 + 1/num_of_cells, grid.x <= 0.666 + 1/num_of_cells)] = 1.0
+    initial_condition1 = grid.a[grid.ilo: grid.ihi + 1]
+    advection = [initial_condition, initial_condition1]
 
     other_dt = False
     if other_dt:
@@ -58,6 +59,8 @@ def eps(num_of_cells):
     return err(advection[-1], initial_condition, h)
 
 
-nums = np.linspace(64, 564, 4).astype(int)
+nums = np.linspace(64, 564, 10).astype(int)
 plt.plot(nums ** -0.5, [eps(x) for x in nums])
+plt.xlabel("1 / Sqrt(N)")
+plt.ylabel("err")
 plt.show()

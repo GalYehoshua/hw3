@@ -32,7 +32,7 @@ def eps(num_of_cells):
 
     other_dt = False
     if other_dt:
-        dt = 1 * h
+        dt = 1.01 * h
 
     for n in range(int(1 / dt)):
         # dt Other than that of CFL...
@@ -42,14 +42,14 @@ def eps(num_of_cells):
 
         advection.append(advection[-1] - CFL * (advection[-1] - neg_shift_adv(advection[-1])))
 
-    # plt.plot(x_range, initial_condition, color='b')
-    # plt.plot(x_range, advection[-1], color='orange')
-    # plt.show()
+    plt.plot(x_range, initial_condition, color='b')
+    plt.plot(x_range, advection[-1], color='orange')
+    plt.show()
 
     return err(advection[-1], initial_condition, h)
 
 
-nums = np.linspace(64, 564, 10).astype(int)
+nums = np.linspace(64, 564, 2).astype(int)
 plt.plot(nums ** -0.5, [eps(x) for x in nums])
 plt.xlabel("1 / Sqrt(N)")
 plt.ylabel("err")

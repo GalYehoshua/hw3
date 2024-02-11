@@ -1,3 +1,4 @@
+from matplotlib import pyplot as plt
 import numpy as np
 
 
@@ -42,8 +43,8 @@ def compute_single_step_rk4(x, y, vx, vy, dt):
 
 
 def earth_orbit(step_method=compute_single_step_euler, dt=1 / 1000):
-    steps = 1000
-    a, e = 1, 0.1
+    steps = int(1 / dt)
+    a, e = 10, 0
     x, y, vx, vy = initial_conditions(a, e)
     xt, yt, vxt, vyt = [], [], [], []
     for i in range(steps):
@@ -58,16 +59,32 @@ def earth_orbit(step_method=compute_single_step_euler, dt=1 / 1000):
 
 def rad(loc_vel_tuple):
     x, y, vx, vy = loc_vel_tuple
-    return (x ** 2 + y ** 2) ** 0.5
+    return (x ** 2 + y ** 2) ** 0.5 - 1
+
+
+def err(loc_vel_tuple):
+    x, y, vx, vy = loc_vel_tuple
+    return abs(x)
+
+
+dts = [1e-4, 5e-4, 1e-3, 1e-2]
+
 
 def earth_orbit_euler():
-    return [rad(earth_orbit(compute_single_step_euler, x / 1000)) for x in [1, 2, 10, 26, 100]]
+    return [earth_orbit(compute_single_step_euler, dt) for dt in dts]
 
 
 def earth_orbit_rk4():
-    return [rad(earth_orbit(compute_single_step_rk4, x / 1000)) for x in [1, 2, 10, 26, 100]]
+    return [earth_orbit(compute_single_step_rk4, dt) for dt in dts]
 
 
 if __name__ == "__main__":
+    print("IC", initial_conditions(10, 0))
     print("euler", earth_orbit_euler())
     print("RK4", earth_orbit_rk4())
+    log_dts = np.log10(dts)
+    plt.plot(log_dts, [err(x) for x in earth_orbit_euler()], color='r', label="euler")
+    plt.plot(log_dts, [err(x) for x in earth_orbit_rk4()], color='y', label="RK4")
+    plt.title("Euler, RK4 radius change")
+    plt.legend()
+    plt.show()

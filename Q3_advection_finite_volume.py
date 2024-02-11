@@ -45,12 +45,15 @@ def REA_and_err(num_of_cells):
     plt.plot(grid.x_actual, initial_condition, color='b')
     plt.plot(grid.x_actual, grid.a[grid.ilo: grid.ihi + 1], color='orange')
     plt.show()
+    err = grid.zeros_array()
+    err[grid.ilo: grid.ihi + 1] = grid.a[grid.ilo: grid.ihi + 1] - initial_condition
+    return grid.norm(e=err)
 
 
-REA_and_err(64)
-# nums = np.linspace(64, 564, 4).astype(int)
-# plt.plot(nums ** -0.5, [eps(x) for x in nums])
-# plt.show()
+# REA_and_err(64)
+nums = np.linspace(64, 564, 4).astype(int)
+plt.plot(nums ** -0.5, [REA_and_err(x) for x in nums])
+plt.show()
 
-# in the case of Riemann problem, we saw in class it was equivalent to upwind.
-# for now i skip it.
+# in the case of Riemann problem of <a>, we saw in class it was equivalent to upwind.
+
